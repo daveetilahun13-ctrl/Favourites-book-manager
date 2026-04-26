@@ -1,1 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📚 Favorite Books Manager</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="hero-section">
+        <div class="hero-content">
+            <i class="fas fa-book-open"></i>
+            <h1>Favorite Books Manager</h1>
+            <p>Your personal digital library</p>
+        </div>
+    </div>
 
+    <div class="app-container">
+        <div class="stats-row">
+            <div class="stat-card">
+                <i class="fas fa-book"></i>
+                <div class="stat-info">
+                    <h3 id="totalBooks">0</h3>
+                    <p>Total Books</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-check-circle"></i>
+                <div class="stat-info">
+                    <h3 id="readBooks">0</h3>
+                    <p>Read</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-star"></i>
+                <div class="stat-info">
+                    <h3 id="avgRating">0</h3>
+                    <p>Avg Rating</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-heart"></i>
+                <div class="stat-info">
+                    <h3 id="favoriteCount">0</h3>
+                    <p>Favorites</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-bar">
+            <button class="btn-add" onclick="openAddModal()">
+                <i class="fas fa-plus"></i> Add New Book
+            </button>
+            <div class="filter-group">
+                <button class="filter-btn active" data-filter="all" onclick="filterBooks('all')">All</button>
+                <button class="filter-btn" data-filter="read" onclick="filterBooks('read')">Read</button>
+                <button class="filter-btn" data-filter="reading" onclick="filterBooks('reading')">Reading</button>
+                <button class="filter-btn" data-filter="want-to-read" onclick="filterBooks('want-to-read')">Want to Read</button>
+                <button class="filter-btn" data-filter="favorite" onclick="filterBooks('favorite')">Favorites</button>
+            </div>
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search by title or author...">
+            </div>
+        </div>
+
+        <div id="booksGrid" class="books-grid">
+            <div class="loading">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Loading your library...</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="addModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-plus"></i> Add New Book</h3>
+                <button class="close-btn" onclick="closeAddModal()">&times;</button>
+            </div>
+            <form id="addBookForm">
+                <input type="text" id="bookTitle" placeholder="Book Title *" required>
+                <input type="text" id="bookAuthor" placeholder="Author *" required>
+                <div class="form-row">
+                    <select id="bookGenre">
+                        <option value="Classic">Classic</option>
+                        <option value="Fiction">Fiction</option>
+                        <option value="Non-Fiction">Non-Fiction</option>
+                        <option value="Science Fiction">Science Fiction</option>
+                        <option value="Fantasy">Fantasy</option>
+                        <option value="Mystery">Mystery</option>
+                        <option value="Romance">Romance</option>
+                        <option value="Self-Help">Self-Help</option>
+                        <option value="Memoir">Memoir</option>
+                        <option value="History">History</option>
+                    </select>
+                    <input type="number" id="bookYear" placeholder="Year Published">
+                </div>
+                <div class="form-row">
+                    <select id="bookStatus">
+                        <option value="want-to-read">Want to Read</option>
+                        <option value="reading">Currently Reading</option>
+                        <option value="read">Read</option>
+                    </select>
+                    <input type="number" id="bookProgress" placeholder="Progress % (0-100)" step="5">
+                </div>
+                <div class="rating-input">
+                    <label>Rating:</label>
+                    <div class="stars" id="addRatingStars">
+                        <i class="far fa-star" data-rating="1"></i>
+                        <i class="far fa-star" data-rating="2"></i>
+                        <i class="far fa-star" data-rating="3"></i>
+                        <i class="far fa-star" data-rating="4"></i>
+                        <i class="far fa-star" data-rating="5"></i>
+                    </div>
+                    <input type="hidden" id="bookRating" value="0">
+                </div>
+                <textarea id="bookReview" rows="3" placeholder="Your review..."></textarea>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="bookFavorite">
+                    <label for="bookFavorite">❤️ Mark as Favorite</label>
+                </div>
+                <button type="submit" class="submit-btn">Add to Library</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-edit"></i> Edit Book</h3>
+                <button class="close-btn" onclick="closeEditModal()">&times;</button>
+            </div>
+            <form id="editBookForm">
+                <input type="hidden" id="editBookId">
+                <input type="text" id="editBookTitle" placeholder="Book Title">
+                <input type="text" id="editBookAuthor" placeholder="Author">
+                <div class="form-row">
+                    <select id="editBookGenre"></select>
+                    <input type="number" id="editBookYear" placeholder="Year">
+                </div>
+                <div class="form-row">
+                    <select id="editBookStatus">
+                        <option value="want-to-read">Want to Read</option>
+                        <option value="reading">Currently Reading</option>
+                        <option value="read">Read</option>
+                    </select>
+                    <input type="number" id="editBookProgress" placeholder="Progress %">
+                </div>
+                <div class="rating-input">
+                    <label>Rating:</label>
+                    <div class="stars" id="editRatingStars">
+                        <i class="far fa-star" data-rating="1"></i>
+                        <i class="far fa-star" data-rating="2"></i>
+                        <i class="far fa-star" data-rating="3"></i>
+                        <i class="far fa-star" data-rating="4"></i>
+                        <i class="far fa-star" data-rating="5"></i>
+                    </div>
+                    <input type="hidden" id="editBookRating" value="0">
+                </div>
+                <textarea id="editBookReview" rows="3" placeholder="Your review..."></textarea>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="editBookFavorite">
+                    <label for="editBookFavorite">❤️ Mark as Favorite</label>
+                </div>
+                <div class="button-group">
+                    <button type="submit" class="submit-btn">Save Changes</button>
+                    <button type="button" class="delete-btn" onclick="deleteBookFromModal()">Delete Book</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="/js/script.js"></script>
+</body>
+</html>
