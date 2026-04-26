@@ -1,180 +1,476 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>📚 Favorite Books Manager</title>
-    <link rel="stylesheet" href="/css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta charset="UTF-8">
+  <title>📚 Favorite Books Manager</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, 'Segoe UI', sans-serif;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+
+    .container {
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+
+    h1 {
+      color: #2c3e50;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .add-section {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+    }
+
+    .add-section h3 {
+      margin-bottom: 15px;
+      color: #2c3e50;
+    }
+
+    input, select, textarea {
+      padding: 10px;
+      margin: 5px;
+      font-size: 14px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      font-size: 14px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+    }
+
+    .add-btn {
+      background: #27ae60;
+      color: white;
+    }
+
+    .add-btn:hover {
+      background: #219a52;
+    }
+
+    .search-box {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+
+    .books-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .book-card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      transition: transform 0.3s;
+      border-left: 4px solid #667eea;
+    }
+
+    .book-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .book-card h3 {
+      margin: 0 0 8px 0;
+      color: #2c3e50;
+    }
+
+    .book-card p {
+      margin: 5px 0;
+      color: #666;
+    }
+
+    .book-card .favorite {
+      color: #e74c3c;
+    }
+
+    .edit-card-btn {
+      background: #3498db;
+      color: white;
+      margin-top: 10px;
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: white;
+      max-width: 500px;
+      margin: 50px auto;
+      padding: 25px;
+      border-radius: 12px;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .close-btn {
+      background: none;
+      font-size: 28px;
+      cursor: pointer;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 10px;
+      margin: 10px 0;
+    }
+
+    .form-row input, .form-row select {
+      flex: 1;
+    }
+
+    .stars {
+      display: flex;
+      gap: 5px;
+      margin: 10px 0;
+    }
+
+    .stars i {
+      font-size: 24px;
+      cursor: pointer;
+      color: #ddd;
+    }
+
+    .stars i.active {
+      color: #f1c40f;
+    }
+
+    .checkbox-group {
+      margin: 15px 0;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .submit-btn {
+      background: #27ae60;
+      color: white;
+      flex: 1;
+    }
+
+    .delete-modal-btn {
+      background: #e74c3c;
+      color: white;
+      flex: 1;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #333;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .modal-content {
+        margin: 20px;
+        padding: 15px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="hero-section">
-        <div class="hero-content">
-            <i class="fas fa-book-open"></i>
-            <h1>Favorite Books Manager</h1>
-            <p>Your personal digital library</p>
-        </div>
+<div class="container">
+  <h1>📚 Favorite Books Manager</h1>
+
+  <div class="add-section">
+    <h3>Add New Book</h3>
+    <input type="text" id="titleInput" placeholder="Book Title">
+    <input type="text" id="authorInput" placeholder="Author">
+    <input type="number" id="yearInput" placeholder="Year">
+    <select id="genreInput">
+      <option value="Fiction">Fiction</option>
+      <option value="Non-Fiction">Non-Fiction</option>
+      <option value="Sci-Fi">Sci-Fi</option>
+      <option value="Fantasy">Fantasy</option>
+    </select>
+    <button class="add-btn" id="addBtn">+ Add Book</button>
+  </div>
+
+  <input type="text" id="searchInput" class="search-box" placeholder="🔍 Search by title or author...">
+
+  <div id="booksContainer" class="books-grid"></div>
+</div>
+
+<!-- Edit Modal -->
+<div id="editModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3><i class="fas fa-edit"></i> Edit Book</h3>
+      <button class="close-btn" onclick="closeEditModal()">&times;</button>
     </div>
-
-    <div class="app-container">
-        <div class="stats-row">
-            <div class="stat-card">
-                <i class="fas fa-book"></i>
-                <div class="stat-info">
-                    <h3 id="totalBooks">0</h3>
-                    <p>Total Books</p>
-                </div>
-            </div>
-            <div class="stat-card">
-                <i class="fas fa-check-circle"></i>
-                <div class="stat-info">
-                    <h3 id="readBooks">0</h3>
-                    <p>Read</p>
-                </div>
-            </div>
-            <div class="stat-card">
-                <i class="fas fa-star"></i>
-                <div class="stat-info">
-                    <h3 id="avgRating">0</h3>
-                    <p>Avg Rating</p>
-                </div>
-            </div>
-            <div class="stat-card">
-                <i class="fas fa-heart"></i>
-                <div class="stat-info">
-                    <h3 id="favoriteCount">0</h3>
-                    <p>Favorites</p>
-                </div>
-            </div>
+    <form id="editBookForm">
+      <input type="hidden" id="editBookId">
+      <input type="text" id="editBookTitle" placeholder="Book Title">
+      <input type="text" id="editBookAuthor" placeholder="Author">
+      <div class="form-row">
+        <select id="editBookGenre"></select>
+        <input type="number" id="editBookYear" placeholder="Year">
+      </div>
+      <div class="form-row">
+        <select id="editBookStatus">
+          <option value="want-to-read">Want to Read</option>
+          <option value="reading">Currently Reading</option>
+          <option value="read">Read</option>
+        </select>
+        <input type="number" id="editBookProgress" placeholder="Progress %">
+      </div>
+      <div class="rating-input">
+        <label>Rating:</label>
+        <div class="stars" id="editRatingStars">
+          <i class="far fa-star" data-rating="1"></i>
+          <i class="far fa-star" data-rating="2"></i>
+          <i class="far fa-star" data-rating="3"></i>
+          <i class="far fa-star" data-rating="4"></i>
+          <i class="far fa-star" data-rating="5"></i>
         </div>
+        <input type="hidden" id="editBookRating" value="0">
+      </div>
+      <textarea id="editBookReview" rows="3" placeholder="Your review..."></textarea>
+      <div class="checkbox-group">
+        <input type="checkbox" id="editBookFavorite">
+        <label for="editBookFavorite">❤️ Mark as Favorite</label>
+      </div>
+      <div class="button-group">
+        <button type="submit" class="submit-btn">Save Changes</button>
+        <button type="button" class="delete-modal-btn" onclick="deleteBookFromModal()">Delete Book</button>
+      </div>
+    </form>
+  </div>
+</div>
 
-        <div class="action-bar">
-            <button class="btn-add" onclick="openAddModal()">
-                <i class="fas fa-plus"></i> Add New Book
-            </button>
-            <div class="filter-group">
-                <button class="filter-btn active" data-filter="all" onclick="filterBooks('all')">All</button>
-                <button class="filter-btn" data-filter="read" onclick="filterBooks('read')">Read</button>
-                <button class="filter-btn" data-filter="reading" onclick="filterBooks('reading')">Reading</button>
-                <button class="filter-btn" data-filter="want-to-read" onclick="filterBooks('want-to-read')">Want to Read</button>
-                <button class="filter-btn" data-filter="favorite" onclick="filterBooks('favorite')">Favorites</button>
-            </div>
-            <div class="search-box">
-                <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" placeholder="Search by title or author...">
-            </div>
-        </div>
+<div id="toast" class="toast"></div>
 
-        <div id="booksGrid" class="books-grid">
-            <div class="loading">
-                <i class="fas fa-spinner fa-spin"></i>
-                <p>Loading your library...</p>
-            </div>
-        </div>
-    </div>
+<script>
+  let books = [
+    { id: 1, title: "The Hobbit", author: "J.R.R. Tolkien", year: 1937, genre: "Fantasy", status: "read", progress: 100, rating: 5, review: "Classic masterpiece!", favorite: true },
+    { id: 2, title: "Dune", author: "Frank Herbert", year: 1965, genre: "Sci-Fi", status: "reading", progress: 60, rating: 4, review: "Amazing world-building!", favorite: false },
+    { id: 3, title: "1984", author: "George Orwell", year: 1949, genre: "Fiction", status: "want-to-read", progress: 0, rating: 0, review: "", favorite: false }
+  ];
+  let nextId = 4;
+  let currentEditBookId = null;
 
-    <div id="addModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3><i class="fas fa-plus"></i> Add New Book</h3>
-                <button class="close-btn" onclick="closeAddModal()">&times;</button>
-            </div>
-            <form id="addBookForm">
-                <input type="text" id="bookTitle" placeholder="Book Title *" required>
-                <input type="text" id="bookAuthor" placeholder="Author *" required>
-                <div class="form-row">
-                    <select id="bookGenre">
-                        <option value="Classic">Classic</option>
-                        <option value="Fiction">Fiction</option>
-                        <option value="Non-Fiction">Non-Fiction</option>
-                        <option value="Science Fiction">Science Fiction</option>
-                        <option value="Fantasy">Fantasy</option>
-                        <option value="Mystery">Mystery</option>
-                        <option value="Romance">Romance</option>
-                        <option value="Self-Help">Self-Help</option>
-                        <option value="Memoir">Memoir</option>
-                        <option value="History">History</option>
-                    </select>
-                    <input type="number" id="bookYear" placeholder="Year Published">
-                </div>
-                <div class="form-row">
-                    <select id="bookStatus">
-                        <option value="want-to-read">Want to Read</option>
-                        <option value="reading">Currently Reading</option>
-                        <option value="read">Read</option>
-                    </select>
-                    <input type="number" id="bookProgress" placeholder="Progress % (0-100)" step="5">
-                </div>
-                <div class="rating-input">
-                    <label>Rating:</label>
-                    <div class="stars" id="addRatingStars">
-                        <i class="far fa-star" data-rating="1"></i>
-                        <i class="far fa-star" data-rating="2"></i>
-                        <i class="far fa-star" data-rating="3"></i>
-                        <i class="far fa-star" data-rating="4"></i>
-                        <i class="far fa-star" data-rating="5"></i>
-                    </div>
-                    <input type="hidden" id="bookRating" value="0">
-                </div>
-                <textarea id="bookReview" rows="3" placeholder="Your review..."></textarea>
-                <div class="checkbox-group">
-                    <input type="checkbox" id="bookFavorite">
-                    <label for="bookFavorite">❤️ Mark as Favorite</label>
-                </div>
-                <button type="submit" class="submit-btn">Add to Library</button>
-            </form>
-        </div>
-    </div>
+  function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.style.display = 'block';
+    setTimeout(() => {
+      toast.style.display = 'none';
+    }, 2000);
+  }
 
-    <div id="editModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3><i class="fas fa-edit"></i> Edit Book</h3>
-                <button class="close-btn" onclick="closeEditModal()">&times;</button>
-            </div>
-            <form id="editBookForm">
-                <input type="hidden" id="editBookId">
-                <input type="text" id="editBookTitle" placeholder="Book Title">
-                <input type="text" id="editBookAuthor" placeholder="Author">
-                <div class="form-row">
-                    <select id="editBookGenre"></select>
-                    <input type="number" id="editBookYear" placeholder="Year">
-                </div>
-                <div class="form-row">
-                    <select id="editBookStatus">
-                        <option value="want-to-read">Want to Read</option>
-                        <option value="reading">Currently Reading</option>
-                        <option value="read">Read</option>
-                    </select>
-                    <input type="number" id="editBookProgress" placeholder="Progress %">
-                </div>
-                <div class="rating-input">
-                    <label>Rating:</label>
-                    <div class="stars" id="editRatingStars">
-                        <i class="far fa-star" data-rating="1"></i>
-                        <i class="far fa-star" data-rating="2"></i>
-                        <i class="far fa-star" data-rating="3"></i>
-                        <i class="far fa-star" data-rating="4"></i>
-                        <i class="far fa-star" data-rating="5"></i>
-                    </div>
-                    <input type="hidden" id="editBookRating" value="0">
-                </div>
-                <textarea id="editBookReview" rows="3" placeholder="Your review..."></textarea>
-                <div class="checkbox-group">
-                    <input type="checkbox" id="editBookFavorite">
-                    <label for="editBookFavorite">❤️ Mark as Favorite</label>
-                </div>
-                <div class="button-group">
-                    <button type="submit" class="submit-btn">Save Changes</button>
-                    <button type="button" class="delete-btn" onclick="deleteBookFromModal()">Delete Book</button>
-                </div>
-            </form>
-        </div>
-    </div>
+  function displayBooks() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const filteredBooks = books.filter(book => 
+      book.title.toLowerCase().includes(searchTerm) || 
+      book.author.toLowerCase().includes(searchTerm)
+    );
 
-    <div id="toast" class="toast"></div>
+    const container = document.getElementById('booksContainer');
+    if (filteredBooks.length === 0) {
+      container.innerHTML = '<p style="text-align:center;">No books found 😢</p>';
+      return;
+    }
 
-    <script src="/js/script.js"></script>
+    container.innerHTML = filteredBooks.map(book => `
+      <div class="book-card">
+        <h3>${book.favorite ? '❤️ ' : '📖 '}${book.title}</h3>
+        <p>✍️ ${book.author}</p>
+        <p>📅 ${book.year} | 🏷 ${book.genre}</p>
+        <p>${book.status.replace('-', ' ')} | Progress: ${book.progress}%</p>
+        <p>⭐️ ${book.rating}/5</p>
+        <button class="edit-card-btn" onclick="openEditModal(${book.id})">✏️ Edit</button>
+      </div>
+    `).join('');
+  }
+
+  function openEditModal(bookId) {
+    const book = books.find(b => b.id === bookId);
+    if (!book) return;
+    
+    currentEditBookId = bookId;
+    document.getElementById('editBookId').value = book.id;
+    document.getElementById('editBookTitle').value = book.title;
+    document.getElementById('editBookAuthor').value = book.author;
+    document.getElementById('editBookYear').value = book.year;
+    document.getElementById('editBookReview').value = book.review || '';
+    document.getElementById('editBookFavorite').checked = book.favorite || false;
+    document.getElementById('editBookStatus').value = book.status || 'want-to-read';
+    document.getElementById('editBookProgress').value = book.progress || 0;
+    
+    // Populate genre dropdown
+    const genreSelect = document.getElementById('editBookGenre');
+    genreSelect.innerHTML = '';
+    ['Fiction', 'Non-Fiction', 'Sci-Fi', 'Fantasy', 'Mystery', 'Biography'].forEach(genre => {
+      const option = document.createElement('option');
+      option.value = genre;
+      option.textContent = genre;
+      if (book.genre === genre) option.selected = true;
+      genreSelect.appendChild(option);
+    });
+    
+    // Set rating stars
+    const rating = book.rating || 0;
+    document.getElementById('editBookRating').value = rating;
+    document.querySelectorAll('#editRatingStars i').forEach(star => {
+      const starRating = parseInt(star.dataset.rating);
+      if (starRating <= rating) {
+        star.className = 'fas fa-star active';
+      } else {
+        star.className = 'far fa-star';
+      }
+    });
+    
+    document.getElementById('editModal').style.display = 'block';
+  }
+
+  function closeEditModal() {
+    document.getElementById('editModal').style.display = 'none';
+    currentEditBookId = null;
+  }
+
+  function deleteBookFromModal() {
+    if (currentEditBookId) {
+      books = books.filter(book => book.id !== currentEditBookId);
+      closeEditModal();
+      displayBooks();
+      showToast('Book deleted successfully!');
+    }
+  }
+
+  document.getElementById('editBookForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const bookIndex = books.findIndex(b => b.id === currentEditBookId);
+    if (bookIndex !== -1) {
+      books[bookIndex] = {
+        id: currentEditBookId,
+        title: document.getElementById('editBookTitle').value,
+        author: document.getElementById('editBookAuthor').value,
+        year: parseInt(document.getElementById('editBookYear').value),
+        genre: document.getElementById('editBookGenre').value,
+        status: document.getElementById('editBookStatus').value,
+        progress: parseInt(document.getElementById('editBookProgress').value) || 0,
+        rating: parseInt(document.getElementById('editBookRating').value),
+        review: document.getElementById('editBookReview').value,
+        favorite: document.getElementById('editBookFavorite').checked
+      };
+      closeEditModal();
+      displayBooks();
+      showToast('Book updated successfully!');
+    }
+  });
+
+  document.getElementById('addBtn').addEventListener('click', () => {
+    const title = document.getElementById('titleInput').value.trim();
+    const author = document.getElementById('authorInput').value.trim();
+    const year = parseInt(document.getElementById('yearInput').value);
+    const genre = document.getElementById('genreInput').value;
+
+    if (title === '' || author === '' || isNaN(year)) {
+      alert('Please fill all fields correctly!');
+      return;
+    }
+
+    const newBook = {
+      id: nextId++,
+      title: title,
+      author: author,
+      year: year,
+      genre: genre,
+      status: 'want-to-read',
+      progress: 0,
+      rating: 0,
+      review: '',
+      favorite: false
+    };
+
+    books.push(newBook);
+    document.getElementById('titleInput').value = '';
+    document.getElementById('authorInput').value = '';
+    document.getElementById('yearInput').value = '';
+    displayBooks();
+    showToast('Book added successfully!');
+  });
+
+  document.getElementById('searchInput').addEventListener('input', displayBooks);
+
+  document.getElementById('editRatingStars').addEventListener('click', (e) => {
+    if (e.target.tagName === 'I') {
+      const rating = parseInt(e.target.dataset.rating);
+      document.getElementById('editBookRating').value = rating;
+      document.querySelectorAll('#editRatingStars i').forEach(star => {
+        const starRating = parseInt(star.dataset.rating);
+        if (starRating <= rating) {
+          star.className = 'fas fa-star active';
+        } else {
+          star.className = 'far fa-star';
+        }
+      });
+    }
+  });
+
+  window.onclick = function(event) {
+    if (event.target === document.getElementById('editModal')) {
+      closeEditModal();
+    }
+  };
+
+  displayBooks();
+</script>
 </body>
 </html>
