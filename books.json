@@ -1,0 +1,54 @@
+[
+  {
+    "id": 1,
+    "title": "The Great Gatsby",
+    "author": "F. Scott Fitzgerald",
+    "genre": "Classic",
+    "year": 1925,
+    "rating": 5,
+    "status": "read",
+    "progress": 100,
+    "review": "A masterpiece about the American Dream. Beautifully written and timeless.",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/9780743273565-L.jpg",
+    "favorite": true
+  },
+  {
+    "id": 2,
+    "title": "Atomic Habits",
+    "author": "James Clear",
+    "genre": "Self-Help",
+    "year": 2018,
+    "rating": 5,
+    "status": "read",
+    "progress": 100,
+    "review": "Life-changing book about building good habits. Highly recommend!",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/9780735211292-L.jpg",
+    "favorite": true
+  },
+  {
+    "id": 3,
+    "title": "Dune",
+    "author": "Frank Herbert",
+    "genre": "Science Fiction",
+    "year": 1965,
+    "rating": 4,
+    "status": "reading",
+    "progress": 65,
+    "review": "Complex world-building, taking my time with this epic.",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/9780441013593-L.jpg",
+    "favorite": false
+  },
+  {
+    "id": 4,
+    "title": "Becoming",
+    "author": "Michelle Obama",
+    "genre": "Memoir",
+    "year": 2018,
+    "rating": 0,
+    "status": "want-to-read",
+    "progress": 0,
+    "review": "",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/9781524763138-L.jpg",
+    "favorite": false
+  }
+]
